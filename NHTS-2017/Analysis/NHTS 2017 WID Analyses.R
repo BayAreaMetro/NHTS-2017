@@ -43,7 +43,7 @@ pweight <- personwt %>%
 # Select Bay Area only households
 
 location_home <- location %>%                            # Home locations in the Bay Area
-  filter(loctype==1 & cntyfips %in% c(1,13,41,55,75,81,85,95,97)) %>%
+  filter(loctype==1 & statefips==6 & (cntyfips %in% c(1,13,41,55,75,81,85,95,97))) %>%
   select(-personid)
 
 bayhh <- left_join(location_home,household,by="houseid") %>%
@@ -280,7 +280,7 @@ CAR_output <- dcast(CAR,Person_Type ~ carcat,sum, value.var = "total")
 
 TAXI <- first %>%
   group_by(Person_Type,taxi) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
+  summarize(total=sum(wthhfin)) %>% mutate(
     taxicat=case_when(
       taxi==-7       ~"5_Never",
       taxi==-9       ~"6_Missing Value",    
@@ -298,7 +298,7 @@ TAXI_output <- dcast(TAXI,Person_Type ~ taxicat,sum, value.var = "total")
 
 BUS <- first %>%
   group_by(Person_Type,bus) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
+  summarize(total=sum(wthhfin)) %>% mutate(
     buscat=case_when(
       bus==-9       ~"6_Missing Value",    
       bus==1     	 ~"1_Daily",
@@ -315,7 +315,7 @@ BUS_output <- dcast(BUS,Person_Type ~ buscat,sum, value.var = "total")
 
 TRAIN <- first %>%
   group_by(Person_Type,train) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
+  summarize(total=sum(wthhfin)) %>% mutate(
     traincat=case_when(
       train==-9       ~"6_Missing Value",    
       train==1     	 ~"1_Daily",
@@ -332,7 +332,7 @@ TRAIN_output <- dcast(TRAIN,Person_Type ~ traincat,sum, value.var = "total")
 
 PARA <- first %>%
   group_by(Person_Type,para) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
+  summarize(total=sum(wthhfin)) %>% mutate(
     paracat=case_when(
       para %in% c(-9,-7)   ~"6_Missing Value",    
       para==1     	       ~"1_Daily",
@@ -349,7 +349,7 @@ PARA_output <- dcast(PARA,Person_Type ~ paracat,sum, value.var = "total")
 
 HOMELOC_1 <- first %>%
   group_by(Person_Type,homeloc_1) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
+  summarize(total=sum(wthhfin)) %>% mutate(
     homeloc_1cat=case_when(
       homeloc_1 ==-1           ~"2_Cost not a top 3 reason",    
       homeloc_1==1     	       ~"1_Cost a top 3 reason",
@@ -361,15 +361,15 @@ HOMELOC_1_output <- dcast(HOMELOC_1,Person_Type ~ homeloc_1cat,sum, value.var = 
 #HOMELOC_10
 
 HOMELOC_10 <- first %>%
-  group_by(Person_Type,alt_1) %>%
-  summarize(total=sum(wtperfin)) %>% mutate(
-    alt_1cat=case_when(
-      alt_1 ==-1        ~"2_Public transit not a top 3 reason",    
-      alt_1==10     	   ~"1_Public transit a top 3 reason",
+  group_by(Person_Type,homeloc_10) %>%
+  summarize(total=sum(wthhfin)) %>% mutate(
+    homeloc_10cat=case_when(
+      homeloc_10==-1         ~"2_Public transit not a top 3 reason",    
+      homeloc_10==10     	   ~"1_Public transit a top 3 reason",
       TRUE                   ~"Unrecoded Case"
     ))
 
-HOMELOC_10_output <- dcast(HOMELOC_10,Person_Type ~ alt_1cat,sum, value.var = "total")
+HOMELOC_10_output <- dcast(HOMELOC_10,Person_Type ~ homeloc_10cat,sum, value.var = "total")
 
 #PRMACT
 
@@ -421,7 +421,3 @@ write.csv(PARA_output, "NHTS 2017 Paratransit Use.csv", row.names = FALSE, quote
 write.csv(HOMELOC_1_output, "NHTS 2017 Cost of Home a Factor.csv", row.names = FALSE, quote = T)
 write.csv(HOMELOC_10_output, "NHTS 2017 Proximity of Home to Transit a Factor.csv", row.names = FALSE, quote = T)
 write.csv(PRMACT_output, "NHTS 2017 Primary Mode to Work.csv", row.names = FALSE, quote = T)
-
-
-
-

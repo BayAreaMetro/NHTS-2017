@@ -259,6 +259,12 @@ first <- bayper %>%
   select(houseid,personid,Person_Type,r_age,medcond,wtperfin) %>% 
   left_join(.,bayhh,by="houseid")
 
+# Householder summary by type
+
+householder <- first %>% 
+group_by(Person_Type) %>% 
+  summarize(Total=sum(wthhfin))
+
 #CAR
 
 CAR <- first %>%
@@ -401,6 +407,8 @@ PRMACT_output <- dcast(PRMACT,Person_Type ~ wrktranscat,sum, value.var = "total"
 
 # Export the summaries
 
+# Person
+
 write.csv(Region_Person, "NHTS 2017 Regional Seniors and PWD.csv", row.names = FALSE, quote = T)
 write.csv(DRVR_output, "NHTS 2017 Driver Status.csv", row.names = FALSE, quote = T)
 write.csv(PTUSED_output, "NHTS 2017 Transit Trips.csv", row.names = FALSE, quote = T)
@@ -413,6 +421,10 @@ write.csv(ALT, "NHTS 2017 Alternative Transportation No Car Available.csv", row.
 write.csv(DEVICE, "NHTS 2017 Device Usage.csv", row.names = FALSE, quote = T)
 write.csv(ADJTRAVEL, "NHTS 2017 Med Condition Adjusted Travel.csv", row.names = FALSE, quote = T)
 write.csv(PTMORE, "NHTS 2017 Using Public Transit More.csv", row.names = FALSE, quote = T)
+
+# Household
+
+write.csv(householder, "NHTS 2017 Householder.csv", row.names = FALSE, quote = T)
 write.csv(CAR_output, "NHTS 2017 Car Use.csv", row.names = FALSE, quote = T)
 write.csv(TAXI_output, "NHTS 2017 Taxi Use.csv", row.names = FALSE, quote = T)
 write.csv(BUS_output, "NHTS 2017 Bus Use.csv", row.names = FALSE, quote = T)

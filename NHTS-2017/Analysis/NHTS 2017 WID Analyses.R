@@ -52,10 +52,10 @@ bayhh <- left_join(location_home,household,by="houseid") %>%
 bayper <- left_join(location_home,person, by="houseid") %>%
   left_join(.,pweight,by=c("houseid","personid")) %>% mutate(
     Person_Type=case_when(
-      medcond==1 & r_age>=65   ~ "4_Both Senior and Disabled",
-      medcond==1               ~ "3_Disabled",
-      r_age>=65                ~ "2_Senior",
-      medcond!=1 & r_age<65    ~ "1_Neither Senior or Disabled",
+      medcond==1 & r_age>=65   ~ "4_Disabled and is Senior",
+      medcond==1 & r_age<65    ~ "3_Disabled and is not Senior",
+      medcond!=1 & r_age>=65   ~ "2_Not Disabled and is Senior",
+      medcond!=1 & r_age<65    ~ "1_Not Disabled and is not Senior",
       TRUE                     ~ "Unrecoded Case"
          ))
 
